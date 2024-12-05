@@ -6,6 +6,10 @@ import (
 	"strconv"
 )
 
+func Day3() (int, int) {
+	return Day3Part1(), Day3Part2()
+}
+
 func Day3Part1() int {
 	programText := getFileContent("./input/day3.txt")
 	mulRegex := regexp.MustCompile(`mul\(([0-9]+),([0-9]+)\)`)

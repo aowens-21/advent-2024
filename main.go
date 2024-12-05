@@ -2,15 +2,32 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
+var thing map[string]func() (int, int) = make(map[string]func() (int, int))
+
 func main() {
-	// fmt.Printf("Day 1 Part 1: %d\n", Day1Part1())
-	// fmt.Printf("Day 1 Part 2: %d\n", Day1Part2())
-	// fmt.Printf("Day 2 Part 1: %d\n", Day2Part1())
-	// fmt.Printf("Day 2 Part 2: %d\n", Day2Part2())
-	// fmt.Printf("Day 3 Part 1: %d\n", Day3Part1())
-	// fmt.Printf("Day 3 Part 2: %d\n", Day3Part2())
-	fmt.Printf("Day 4 Part 1: %d\n", Day4Part1())
-	fmt.Printf("Day 4 Part 2: %d\n", Day4Part2())
+	thing["1"] = Day1
+	thing["2"] = Day2
+	thing["3"] = Day3
+	thing["4"] = Day4
+	thing["5"] = Day5
+
+	// Trim off program name
+	args := os.Args[1:]
+
+	if len(args) < 1 {
+		panic("Please provide a day as a command line argument")
+	}
+
+	dayFn, ok := thing[args[0]]
+
+	if ok {
+		part1, part2 := dayFn()
+		fmt.Printf("Part1: %d\nPart2: %d\n", part1, part2)
+	} else {
+		fmt.Println("Not implemented!")
+	}
+
 }

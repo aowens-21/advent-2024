@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+func Day1() (int, int) {
+	return Day1Part1(), Day1Part2()
+}
+
 func Day1Part1() int {
 	numPairs := readNums("./input/day1.txt")
 	var leftNums []int

@@ -7,6 +7,10 @@ import (
 	"os"
 )
 
+func Day4() (int, int) {
+	return Day4Part1(), Day4Part2()
+}
+
 func Day4Part1() int {
 	wordSearch := readSearch("./input/day4.txt")
 	sum := 0
