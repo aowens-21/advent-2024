@@ -1,25 +1,21 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
 	"math"
-	"os"
 	"sort"
 	"strconv"
 	"strings"
 )
 
-func Day1() (int, int) {
-	return Day1Part1(), Day1Part2()
+func Day1(lines []string) (int, int) {
+	return Day1Part1(lines), Day1Part2(lines)
 }
 
-func Day1Part1() int {
-	numPairs := readNums("./input/day1.txt")
+func Day1Part1(lines []string) int {
 	var leftNums []int
 	var rightNums []int
 
-	for _, pair := range numPairs {
+	for _, pair := range lines {
 		numsAsStr := strings.Split(pair, "   ")
 		leftNum, err1 := strconv.Atoi(numsAsStr[0])
 		rightNum, err2 := strconv.Atoi(numsAsStr[1])
@@ -44,12 +40,11 @@ func Day1Part1() int {
 	return sum
 }
 
-func Day1Part2() int {
-	numPairs := readNums("./input/day1.txt")
+func Day1Part2(lines []string) int {
 	var leftNums []int
 	var rightNums []int
 
-	for _, pair := range numPairs {
+	for _, pair := range lines {
 		numsAsStr := strings.Split(pair, "   ")
 		leftNum, err1 := strconv.Atoi(numsAsStr[0])
 		rightNum, err2 := strconv.Atoi(numsAsStr[1])
@@ -83,27 +78,4 @@ func Day1Part2() int {
 	}
 
 	return sum
-}
-
-func readNums(fileName string) []string {
-	f, err := os.Open(fileName)
-
-	if err != nil {
-		panic(err)
-	}
-
-	var numPairs []string
-
-	scanner := bufio.NewScanner(bufio.NewReader(f))
-
-	for scanner.Scan() {
-		line := scanner.Text()
-		numPairs = append(numPairs, line)
-	}
-
-	if err := scanner.Err(); err != nil {
-		fmt.Fprintln(os.Stderr, "Reading input failed: ", err)
-	}
-
-	return numPairs
 }

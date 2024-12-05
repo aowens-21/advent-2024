@@ -1,6 +1,6 @@
 package main
 
-func Day5() (int, int) {
+func Day5(lines []string) (int, int) {
 	return Day5Part1(), Day5Part2()
 }
 

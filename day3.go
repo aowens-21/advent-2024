@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func Day3() (int, int) {
+func Day3(lines []string) (int, int) {
 	return Day3Part1(), Day3Part2()
 }
 

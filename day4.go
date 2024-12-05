@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Day4() (int, int) {
+func Day4(lines []string) (int, int) {
 	return Day4Part1(), Day4Part2()
 }
 

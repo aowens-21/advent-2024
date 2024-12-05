@@ -1,11 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
 
-var thing map[string]func() (int, int) = make(map[string]func() (int, int))
+var thing map[string]func([]string) (int, int) = make(map[string]func([]string) (int, int))
 
 func main() {
 	thing["1"] = Day1
@@ -24,10 +25,35 @@ func main() {
 	dayFn, ok := thing[args[0]]
 
 	if ok {
-		part1, part2 := dayFn()
+		fileName := fmt.Sprintf("./input/day%s.txt", args[0])
+
+		part1, part2 := dayFn(read(fileName))
 		fmt.Printf("Part1: %d\nPart2: %d\n", part1, part2)
 	} else {
 		fmt.Println("Not implemented!")
 	}
 
+}
+
+func read(fileName string) []string {
+	f, err := os.Open(fileName)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var lines []string
+
+	scanner := bufio.NewScanner(bufio.NewReader(f))
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		lines = append(lines, line)
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "Reading input failed: ", err)
+	}
+
+	return lines
 }

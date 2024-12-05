@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func Day2() (int, int) {
+func Day2(lines []string) (int, int) {
 	return Day2Part1(), Day2Part2()
 }
 
