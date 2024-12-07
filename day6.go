@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"slices"
+	"strings"
+)
 
 func Day6(lines []string) (int, int) {
 	return Day6Part1(lines), Day6Part2(lines)
@@ -71,13 +74,12 @@ func Day6Part2(lines []string) int {
 
 	guardLoc := strings.Index(flatGrid, "^")
 
-	possibleGrids := getPossibleGrids(flatGrid, guardLoc)
+	possibleGrids := getPossibleGrids(flatGrid, guardLoc, lines)
 
 	sum := 0
 
-	for i, g := range possibleGrids {
-		println("Checking grid %d of %d", i, len(possibleGrids))
-		if gridIsLoop(g, guardLoc, len(lines)) {
+	for _, g := range possibleGrids {
+		if gridIsLoop([]rune(g), guardLoc, len(lines)) {
 			sum++
 		}
 	}
@@ -85,19 +87,15 @@ func Day6Part2(lines []string) int {
 	return sum
 }
 
-func gridIsLoop(grid string, startLoc int, lineLength int) bool {
+func gridIsLoop(grid []rune, startLoc int, lineLength int) bool {
 	guardLoc := startLoc
 	direction := "up"
 
+	visitedDirMap := make(map[int][]string)
+
 	steps := 0
-	iterations := 0
 
 	for {
-		iterations++
-		if iterations > lineLength*lineLength {
-			return true
-		}
-
 		var nextLoc int
 
 		if direction == "up" {
@@ -108,6 +106,14 @@ func gridIsLoop(grid string, startLoc int, lineLength int) bool {
 			nextLoc = guardLoc - 1
 		} else if direction == "right" {
 			nextLoc = guardLoc + 1
+		}
+
+		directionsVisitedThisLocFrom, ok := visitedDirMap[nextLoc]
+
+		if ok {
+			if slices.Contains(directionsVisitedThisLocFrom, direction) {
+				return true
+			}
 		}
 
 		if nextLoc < 0 || nextLoc > len(grid)-1 || grid[nextLoc] == '\n' {
@@ -125,10 +131,14 @@ func gridIsLoop(grid string, startLoc int, lineLength int) bool {
 				direction = "down"
 			}
 		} else {
+			if ok {
+				visitedDirMap[nextLoc] = append(directionsVisitedThisLocFrom, direction)
+			} else {
+				visitedDirMap[nextLoc] = []string{direction}
+			}
+
 			if grid[nextLoc] != 'X' {
-				fgR := []rune(grid)
-				fgR[nextLoc] = 'X'
-				grid = string(fgR)
+				grid[nextLoc] = 'X'
 				steps++
 			}
 
@@ -137,17 +147,59 @@ func gridIsLoop(grid string, startLoc int, lineLength int) bool {
 	}
 }
 
-func getPossibleGrids(grid string, exclude int) []string {
+func getPossibleGrids(grid string, guardLoc int, lines []string) []string {
 	var grids []string
+	flatGrid := strings.Clone(grid)
 
-	for i, c := range grid {
-		if i == exclude || c == '#' {
-			// noop
-		} else {
-			fgR := []rune(grid)
-			fgR[i] = '#'
-			grids = append(grids, string(fgR))
+	direction := "up"
+
+	var indicesVisited []int
+
+	for {
+		var nextLoc int
+
+		if direction == "up" {
+			nextLoc = guardLoc - len(lines) - 1
+		} else if direction == "down" {
+			nextLoc = guardLoc + len(lines) + 1
+		} else if direction == "left" {
+			nextLoc = guardLoc - 1
+		} else if direction == "right" {
+			nextLoc = guardLoc + 1
 		}
+
+		if nextLoc < 0 || nextLoc > len(flatGrid)-1 || flatGrid[nextLoc] == '\n' {
+			break
+		}
+
+		if flatGrid[nextLoc] == '#' {
+			if direction == "up" {
+				direction = "right"
+			} else if direction == "down" {
+				direction = "left"
+			} else if direction == "left" {
+				direction = "up"
+			} else if direction == "right" {
+				direction = "down"
+			}
+		} else {
+			if flatGrid[nextLoc] != 'X' {
+				fgR := []rune(flatGrid)
+				fgR[nextLoc] = 'X'
+				flatGrid = string(fgR)
+
+				if nextLoc != guardLoc {
+					indicesVisited = append(indicesVisited, nextLoc)
+				}
+			}
+			guardLoc = nextLoc
+		}
+	}
+
+	for _, index := range indicesVisited {
+		fgR := []rune(grid)
+		fgR[index] = '#'
+		grids = append(grids, string(fgR))
 	}
 
 	return grids
