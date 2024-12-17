@@ -19,6 +19,7 @@ func main() {
 	thing["8"] = Day8
 	thing["9"] = Day9
 	thing["10"] = Day10
+	thing["11"] = Day11
 
 	// Trim off program name
 	args := os.Args[1:]
